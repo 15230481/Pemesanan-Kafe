@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Orders - TempatKumpul</title>
+    <link rel="icon" type="image/x-icon" href="https://static.photos/food/200x200/1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B4513',
+                        secondary: '#E0C097',
+                        danger: '#dc2626',
+                        success: '#16a34a',
+                        warning: '#ea580c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .order-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+        .order-card.pending {
+            border-left-color: #3b82f6;
+        }
+        .order-card.processing {
+            border-left-color: #d97706;
+        }
+        .order-card.completed {
+            border-left-color: #16a34a;
+        }
+        .order-card.cancelled {
+            border-left-color: #dc2626;
+        }
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .order-tabs .active {
+            border-bottom: 3px solid #8B4513;
+            font-weight: 600;
+            color: #8B4513;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <span class="text-2xl font-bold text-primary">Admin<span class="text-secondary">Panel</span></span>
+            </a>
+            <div class="flex items-center space-x-4">
+                <button onclick="refreshOrders()" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                    <i data-feather="refresh-cw"></i>
+                </button>
+                <button onclick="logout()" class="px-4 py-2 bg-danger text-white rounded-lg hover:bg-opacity-90 flex items-center">
+                    <i data-feather="log-out" class="mr-2"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Orders Section -->
+    <section class="py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-800">Manajemen Pesanan</h1>
+                <div class="relative">
+                    <input type="text" id="searchOrders" placeholder="Cari pesanan..." 
+                        class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <i data-feather="search" class="absolute left-3 top-2.5 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- Order Tabs -->
+            <div class="order-tabs flex border-b mb-6">
+                <button onclick="filterOrders('all')" class="px-4 py-2 active">Semua</button>
+                <button onclick="filterOrders('pending')" class="px-4 py-2">Pending</button>
+                <button onclick="filterOrders('processing')" class="px-4 py-2">Diproses</button>
+                <button onclick="filterOrders('completed')" class="px-4 py-2">Selesai</button>
+                <button onclick="filterOrders('cancelled')" class="px-4 py-2">Dibatalkan</button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500">Total Pesanan</p>
+                            <h3 class="text-2xl font-bold" id="totalOrders">0</h3>
+                        </div>
+                        <div class="p-2 bg-blue-100 rounded-lg">
+                            <i data-feather="shopping-bag" class="text-blue-500"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500">Pending</p>
+                            <h3 class="text-2xl font-bold" id="pendingOrders">0</h3>
+                        </div>
+                        <div class="p-2 bg-orange-100 rounded-lg">
+                            <i data-feather="clock" class="text-orange-500"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500">Diproses</p>
+                            <h3 class="text-2xl font-bold" id="processingOrders">0</h3>
+                        </div>
+                        <div class="p-2 bg-yellow-100 rounded-lg">
+                            <i data-feather="rotate-cw" class="text-yellow-500"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500">Selesai Hari Ini</p>
+                            <h3 class="text-2xl font-bold" id="completedToday">0</h3>
+                        </div>
+                        <div class="p-2 bg-green-100 rounded-lg">
+                            <i data-feather="check-circle" class="text-green-500"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders List -->
+            <div id="ordersContainer" class="space-y-4">
+                <!-- Loading Skeleton -->
+                <div id="loadingSkeleton" class="space-y-4">
+                    <div class="bg-white p-6 rounded-lg shadow-sm animate-pulse">
+                        <div class="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm animate-pulse">
+                        <div class="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                </div>
+
+                <!-- Orders will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Check admin authentication
+        if (!localStorage.getItem('isAdmin')) {
+            window.location.href = 'admin.html';
+        }
+
+        let allOrders = [];
+        let filteredOrders = [];
+
+        // DOM Ready
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            loadOrders();
+            
+            // Search functionality
+            document.getElementById('searchOrders').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                filterOrders(currentFilter, searchTerm);
+            });
+            
+            // Set up auto-refresh every 30 seconds
+            setInterval(loadOrders, 30000);
+        });
+
+        // Current filter state
+        let currentFilter = 'all';
+
+        // Load orders from localStorage
+        function loadOrders() {
+            document.getElementById('loadingSkeleton').classList.remove('hidden');
+            
+            // Simulate API delay
+            setTimeout(() => {
+                allOrders = JSON.parse(localStorage.getItem('adminOrders')) || [];
+                updateStats();
+                filterOrders(currentFilter);
+                document.getElementById('loadingSkeleton').classList.add('hidden');
+            }, 800);
+        }
+
+        // Update statistics
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            document.getElementById('totalOrders').textContent = allOrders.length;
+            document.getElementById('pendingOrders').textContent = 
+                allOrders.filter(o => o.status === 'pending').length;
+            document.getElementById('processingOrders').textContent = 
+                allOrders.filter(o => o.status === 'processing').length;
+            document.getElementById('completedToday').textContent = 
+                allOrders.filter(o => o.status === 'completed' && o.completedDate?.includes(today)).length;
+        }
+
+        // Filter orders by status
+        function filterOrders(status = 'all', searchTerm = '') {
+            currentFilter = status;
+            
+            // Update active tab
+            document.querySelectorAll('.order-tabs button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter orders
+            filteredOrders = allOrders.filter(order => {
+                const matchesStatus = status === 'all' || order.status === status;
+                const matchesSearch = searchTerm === '' || 
+                    order.id.toString().includes(searchTerm) || 
+                    order.tableNumber.toLowerCase().includes(searchTerm) ||
+                    order.items.some(item => item.name.toLowerCase().includes(searchTerm));
+                return matchesStatus && matchesSearch;
+            });
+            
+            renderOrders();
+        }
+
+        // Render orders to the DOM
+        function renderOrders() {
+            const container = document.getElementById('ordersContainer');
+            container.innerHTML = '';
+            
+            if (filteredOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i data-feather="package" class="w-12 h-12 mx-auto text-gray-400"></i>
+                        <p class="text-gray-600 mt-4">Tidak ada pesanan yang ditemukan</p>
+                    </div>
+                `;
+                feather.replace();
+                return;
+            }
+            
+            // Sort by newest first
+            filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            filteredOrders.forEach(order => {
+                const date = new Date(order.date);
+                const orderCard = document.createElement('div');
+                orderCard.className = `bg-white rounded-lg shadow-sm p-6 order-card ${order.status}`;
+                
+                let statusClass = '';
+                let statusText = '';
+                switch(order.status) {
+                    case 'pending':
+                        statusClass = 'bg-blue-100 text-blue-800';
+                        statusText = 'Pending';
+                        break;
+                    case 'processing':
+                        statusClass = 'bg-yellow-100 text-yellow-800';
+                        statusText = 'Diproses';
+                        break;
+                    case 'completed':
+                        statusClass = 'bg-green-100 text-green-800';
+                        statusText = 'Selesai';
+                        break;
+                    case 'cancelled':
+                        statusClass = 'bg-red-100 text-red-800';
+                        statusText = 'Dibatalkan';
+                        break;
+                }
+                
+                orderCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4 flex-wrap gap-2">
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-800">Pesanan #${order.id}</h2>
+                            <p class="text-sm text-gray-500">${date.toLocaleString()}</p>
+                            <div class="flex items-center mt-1">
+                                <i data-feather="user" class="w-4 h-4 mr-1 text-gray-500"></i>
+                                <span class="text-sm">Meja ${order.tableNumber}</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <span class="${statusClass} status-badge">${statusText}</span>
+                            <p class="text-sm mt-1">${order.paymentMethod}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Items:</h3>
+                        <div class="space-y-2">
+                            ${order.items.map(item => `
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <span>${item.name}</span>
+                                        <span class="text-gray-500 text-sm ml-2">x${item.quantity}</span>
+                                    </div>
+                                    <span class="font-medium">Rp ${(item.price * item.quantity).toLocaleString()}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4 space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Subtotal:</span>
+                            <span class="font-medium">Rp ${order.subtotal.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Biaya Pengiriman:</span>
+                            <span class="font-medium">Rp ${order.deliveryFee.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Pajak:</span>
+                            <span class="font-medium">Rp ${order.tax.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between border-t pt-2 font-bold">
+                            <span>Total:</span>
+                            <span class="text-primary">Rp ${order.total.toLocaleString()}</span>
+                        </div>
+                    </div>
+                    
+                    ${order.status !== 'completed' && order.status !== 'cancelled' ? `
+                    <div class="mt-6 flex justify-end space-x-3">
+                        ${order.status === 'pending' ? `
+                        <button onclick="updateOrderStatus(${order.id}, 'processing')" class="px-4 py-2 bg-warning text-white rounded-lg hover:bg-opacity-90">
+                            Proses Pesanan
+                        </button>
+                        ` : ''}
+                        ${order.status === 'processing' ? `
+                        <button onclick="updateOrderStatus(${order.id}, 'completed')" class="px-4 py-2 bg-success text-white rounded-lg hover:bg-opacity-90">
+                            Tandai Selesai
+                        </button>
+                        ` : ''}
+                        <button onclick="updateOrderStatus(${order.id}, 'cancelled')" class="px-4 py-2 bg-danger text-white rounded-lg hover:bg-opacity-90">
+                            Batalkan
+                        </button>
+                    </div>
+                    ` : ''}
+                `;
+                container.appendChild(orderCard);
+            });
+            
+            feather.replace();
+        }
+
+        // Update order status
+        function updateOrderStatus(orderId, status) {
+            if (confirm(`Anda yakin ingin mengubah status pesanan ini ke ${status}?`)) {
+                const orderIndex = allOrders.findIndex(o => o.id === orderId);
+                
+                if (orderIndex !== -1) {
+                    allOrders[orderIndex].status = status;
+                    
+                    if (status === 'completed') {
+                        allOrders[orderIndex].completedDate = new Date().toISOString();
+                    }
+                    
+                    localStorage.setItem('adminOrders', JSON.stringify(allOrders));
+                    showNotification(`Status pesanan #${orderId} diubah ke ${status}`, 'success');
+                    
+                    // Update stats and re-render
+                    updateStats();
+                    filterOrders(currentFilter, document.getElementById('searchOrders').value);
+                }
+            }
+        }
+
+        // Refresh orders
+        function refreshOrders() {
+            loadOrders();
+            showNotification('Daftar pesanan diperbarui', 'info');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg text-white ${
+                type === 'success' ? 'bg-success' : 
+                type === 'error' ? 'bg-danger' : 
+                type === 'warning' ? 'bg-warning' : 'bg-primary'
+            }`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i data-feather="${
+                        type === 'success' ? 'check-circle' : 
+                        type === 'error' ? 'alert-circle' : 
+                        type === 'warning' ? 'alert-triangle' : 'info'
+                    }" class="mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            feather.replace();
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('isAdmin');
+            window.location.href = 'admin.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TempatKumpul - Makanan Lezat Dikirim</title>
+<link rel="icon" type="image/x-icon" href="https://static.photos/food/200x200/1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B4513',
+                        secondary: '#E0C097',
+}
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-bg {
+            background-image: url('https://static.photos/food/1200x630/5');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .menu-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: center bottom;
+        }
+        .menu-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .menu-card img {
+            transition: transform 0.4s ease, filter 0.3s ease;
+        }
+        .menu-card:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.05);
+        }
+        .category-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .category-card:hover {
+            transform: translateY(-5px) rotate(1deg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .testimonial-card {
+            transition: all 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #FF6B6B;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+</style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="flex items-center">
+                <span class="text-2xl font-bold text-primary">Tempat<span class="text-secondary">Kumpul</span></span>
+</a>
+            <div class="hidden md:flex space-x-8 mx-auto">
+                <a href="#" class="text-gray-700 hover:text-primary font-medium nav-link">Home</a>
+                <a href="#menu" class="text-gray-700 hover:text-primary font-medium nav-link">Menu</a>
+                <a href="#about" class="text-gray-700 hover:text-primary font-medium nav-link">About</a>
+                <a href="#contact" class="text-gray-700 hover:text-primary font-medium nav-link">Contact</a>
+            </div>
+<div class="flex items-center space-x-4">
+                <a href="cart.html" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                    <i data-feather="shopping-cart" class="text-gray-700"></i>
+                </a>
+                <a href="admin.html" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                    <i data-feather="lock" class="text-gray-700"></i>
+                </a>
+<a href="#" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 md:hidden">
+                    <i data-feather="menu" class="text-gray-700"></i>
+                </a>
+</div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-96 flex items-center">
+        <div class="container mx-auto px-4">
+            <div class="max-w-xl bg-white bg-opacity-90 p-8 rounded-lg shadow-lg">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">Makanan Lezat Dikirim ke Meja Anda</h1>
+                <p class="text-gray-600 mb-6">Pesan makanan favorit Anda dari restoran lokal hanya dalam beberapa klik.</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                <input type="text" placeholder="Masukkan nomor meja" class="flex-grow px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                <button class="px-4 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium" onclick="confirmTableNumber()">
+<i data-feather="check" class="w-5 h-5"></i>
+                </button>
+                <button class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium" onclick="window.location.href='menu.html'">Lihat Menu</button>
+</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Kategori</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 justify-items-center">
+<div class="bg-primary bg-opacity-10 p-6 rounded-lg text-center hover:bg-opacity-20 cursor-pointer category-card w-full max-w-xs">
+<div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="coffee" class="text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">Makanan</h3>
+</div>
+<div class="bg-secondary bg-opacity-10 p-6 rounded-lg text-center hover:bg-opacity-20 cursor-pointer category-card w-full max-w-xs">
+<div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="box" class="text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">Minuman</h3>
+</div>
+</div>
+        </div>
+    </section>
+
+    <!-- Popular Items -->
+    <section id="menu" class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Menu Populer</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">Temukan hidangan favorit pelanggan kami</p>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Item 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                    <img src="https://static.photos/food/640x360/1" alt="Burger" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Nasi Goreng Spesial</h3>
+                            <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 35.000</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Nasi goreng dengan telur, ayam, udang, dan bumbu racikan khas.</p>
+<div class="flex justify-between items-center">
+                            <div class="flex items-center text-yellow-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <span class="text-gray-600 text-sm ml-1">(48)</span>
+                            </div>
+                            <button class="px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Nasi Goreng Spesial', 35000, 'https://static.photos/food/640x360/1')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                    <img src="https://static.photos/food/640x360/2" alt="Pizza" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Sate Ayam</h3>
+                            <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 25.000</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Sate ayam dengan bumbu kacang dan lontong, disajikan dengan kecap manis.</p>
+<div class="flex justify-between items-center">
+                            <div class="flex items-center text-yellow-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4"></i>
+                                <span class="text-gray-600 text-sm ml-1">(36)</span>
+                            </div>
+                            <button class="px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Sate Ayam', 25000, 'https://static.photos/food/640x360/2')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                    <img src="https://static.photos/food/640x360/3" alt="Salad" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Gado-Gado</h3>
+                            <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 28.000</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Sayuran segar dengan tahu, tempe, telur dan bumbu kacang khas.</p>
+<div class="flex justify-between items-center">
+                            <div class="flex items-center text-yellow-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <span class="text-gray-600 text-sm ml-1">(52)</span>
+                            </div>
+                            <button class="px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Gado-Gado', 28000, 'https://static.photos/food/640x360/3')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <button class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 font-medium" onclick="window.location.href='menu.html'">Lihat Semua Menu</button>
+</div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Cara Memesan</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-white text-2xl font-bold">1</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Pilih Makanan</h3>
+                    <p class="text-gray-600">Telusuri menu lezat kami dan pilih makanan favorit Anda</p>
+</div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-white text-2xl font-bold">2</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Checkout pesanan</h3>
+                    <p class="text-gray-600">Pilih metode pembayaran anda dan selesaikan pesanan</p>
+</div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-white text-2xl font-bold">3</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Nikmati Makanan</h3>
+                    <p class="text-gray-600">Duduk santai dan nikmati makanan lezat yang kami antar segar</p>
+</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Testimoni Pelanggan</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm testimonial-card">
+<div class="flex items-center mb-4">
+                        <img src="https://static.photos/people/200x200/1" alt="Customer" class="w-12 h-12 rounded-full object-cover">
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-gray-800">Budi Santoso</h4>
+<div class="flex text-yellow-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                        </div>
+                    </div>
+                            <p class="text-gray-600">"Makanan datang masih panas dan segar, sesuai deskripsi. Pengirimannya lebih cepat dari perkiraan. Pasti akan pesan lagi!"</p>
+</div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm testimonial-card">
+<div class="flex items-center mb-4">
+                        <img src="https://static.photos/people/200x200/2" alt="Customer" class="w-12 h-12 rounded-full object-cover">
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-gray-800">Siti Rahayu</h4>
+<div class="flex text-yellow-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                            <p class="text-gray-600">"Banyak pilihan menu dan proses pemesanannya sangat mudah. Nasi gorengnya salah satu yang terbaik yang pernah saya pesan."</p>
+</div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm testimonial-card">
+<div class="flex items-center mb-4">
+                        <img src="https://static.photos/people/200x200/3" alt="Customer" class="w-12 h-12 rounded-full object-cover">
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-gray-800">Dewi Lestari</h4>
+<div class="flex text-yellow-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                        </div>
+                    </div>
+                            <p class="text-gray-600">"Saya pesan dari BiteBuddy minimal dua kali seminggu. Kualitasnya selalu bagus dan pelayanannya ramah."</p>
+</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 bg-primary text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">Siap menikmati makanan lezat?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Download aplikasi kami untuk penawaran eksklusif dan pemesanan lebih cepat</p>
+<div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button class="px-6 py-3 bg-primary text-white rounded-lg font-medium flex items-center justify-center" onclick="alert('Mengarahkan ke App Store')">
+<i data-feather="download" class="mr-2"></i>
+                    Unduh di App Store
+                </button>
+                <button class="px-6 py-3 bg-primary text-white rounded-lg font-medium flex items-center justify-center" onclick="alert('Mengarahkan ke Google Play')">
+<i data-feather="download" class="mr-2"></i>
+                    Unduh di Google Play
+                </button>
+</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">BiteBuddy</h3>
+                    <p class="text-gray-400">Delivering delicious food to your doorstep since 2023.</p>
+                    <div class="flex mt-4 space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i data-feather="facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i data-feather="twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i data-feather="instagram"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Press</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i data-feather="map-pin" class="mr-2"></i> 123 Food St, New York</li>
+                        <li class="flex items-center text-gray-400"><i data-feather="phone" class="mr-2"></i> (123) 456-7890</li>
+                        <li class="flex items-center text-gray-400"><i data-feather="mail" class="mr-2"></i> hello@bitebuddy.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2023 BiteBuddy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        function confirmTableNumber() {
+            const tableNumber = document.querySelector('input[placeholder="Masukkan nomor meja"]').value;
+            if (tableNumber) {
+                localStorage.setItem('tableNumber', tableNumber);
+                alert(`Nomor meja ${tableNumber} telah dikonfirmasi`);
+            } else {
+                alert('Silahkan masukkan nomor meja terlebih dahulu');
+            }
+        }
+
+        function addToCart(name, price, image) {
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name: name,
+                    price: price,
+                    image: image,
+                    quantity: 1
+                });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${name} ditambahkan ke keranjang`);
+        }
+
+        feather.replace();
+    </script>
+</body>
+</html>

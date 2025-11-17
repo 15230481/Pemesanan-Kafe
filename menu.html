@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Lengkap - TempatKumpul</title>
+<link rel="icon" type="image/x-icon" href="https://static.photos/food/200x200/1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B4513',
+                        secondary: '#E0C097',
+}
+                }
+            }
+        }
+    </script>
+    <style>
+        .menu-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <span class="text-2xl font-bold text-primary">Tempat<span class="text-secondary">Kumpul</span></span>
+</a>
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                    <i data-feather="home" class="text-gray-700"></i>
+                </a>
+                <a href="cart.html" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                    <i data-feather="shopping-cart" class="text-gray-700"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Section -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-12">Menu Lengkap</h1>
+            
+            <!-- Indonesian Food Section -->
+            <div class="mb-16">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Makanan Indonesia</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Nasi Goreng -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                        <img src="https://static.photos/food/640x360/11" alt="Nasi Goreng" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Nasi Goreng Spesial</h3>
+                                <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 35.000</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Nasi goreng dengan telur, ayam, udang, dan bumbu racikan khas.</p>
+                            <button class="w-full px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Nasi Goreng Spesial', 35000, 'https://static.photos/food/640x360/11')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+
+                    <!-- Sate Ayam -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                        <img src="https://static.photos/food/640x360/12" alt="Sate Ayam" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Sate Ayam</h3>
+                                <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 25.000</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Sate ayam dengan bumbu kacang dan lontong, disajikan dengan kecap manis.</p>
+                            <button class="w-full px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Sate Ayam', 25000, 'https://static.photos/food/640x360/12')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+
+                    <!-- Gado-Gado -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                        <img src="https://static.photos/food/640x360/13" alt="Gado-Gado" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Gado-Gado</h3>
+                                <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 28.000</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Sayuran segar dengan tahu, tempe, telur dan bumbu kacang khas.</p>
+                            <button class="w-full px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Gado-Gado', 28000, 'https://static.photos/food/640x360/13')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+
+                    <!-- Soto Ayam -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                        <img src="https://static.photos/food/640x360/14" alt="Soto Ayam" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Soto Ayam</h3>
+                                <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 30.000</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Soto ayam dengan kuah kaldu yang gurih, disajikan dengan nasi.</p>
+                            <button class="w-full px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Soto Ayam', 30000, 'https://static.photos/food/640x360/14')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+
+                    <!-- Rendang -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                        <img src="https://static.photos/food/640x360/15" alt="Rendang" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Rendang Daging</h3>
+                                <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 45.000</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Daging sapi dimasak dengan bumbu rempah khas Padang yang kaya rasa.</p>
+                            <button class="w-full px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Rendang Daging', 45000, 'https://static.photos/food/640x360/15')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+
+                    <!-- Bakso -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                        <img src="https://static.photos/food/640x360/16" alt="Bakso" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Bakso Spesial</h3>
+                                <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 22.000</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Bakso daging dengan kuah kaldu sapi yang gurih, disajikan dengan mie.</p>
+                            <button class="w-full px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Bakso Spesial', 22000, 'https://static.photos/food/640x360/16')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drinks Section -->
+            <div>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Minuman</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Es Teh -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                        <img src="https://static.photos/food/640x360/17" alt="Es Teh" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Es Teh Manis</h3>
+                                <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 8.000</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Es teh segar dengan rasa manis yang pas.</p>
+                            <button class="w-full px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Es Teh Manis', 8000, 'https://static.photos/food/640x360/17')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+
+                    <!-- Jus Alpukat -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                        <img src="https://static.photos/food/640x360/18" alt="Jus Alpukat" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Jus Alpukat</h3>
+                                <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 18.000</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Jus alpukat segar dengan susu kental manis.</p>
+                            <button class="w-full px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Jus Alpukat', 18000, 'https://static.photos/food/640x360/18')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+
+                    <!-- Es Jeruk -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md menu-card">
+                        <img src="https://static.photos/food/640x360/19" alt="Es Jeruk" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Es Jeruk</h3>
+                                <span class="bg-primary text-white text-sm px-2 py-1 rounded">Rp 12.000</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Es jeruk segar dengan rasa manis asam yang seimbang.</p>
+                            <button class="w-full px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-opacity-90" onclick="addToCart('Es Jeruk', 12000, 'https://static.photos/food/640x360/19')">Tambah ke Keranjang</button>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function addToCart(name, price, image) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name: name,
+                    price: price,
+                    image: image,
+                    quantity: 1
+                });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${name} ditambahkan ke keranjang`);
+        }
+
+        feather.replace();
+    </script>
+</body>
+</html>

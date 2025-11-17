@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesanan Anda - TempatKumpul</title>
+<link rel="icon" type="image/x-icon" href="https://static.photos/food/200x200/1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B4513',
+                        secondary: '#E0C097',
+}
+                }
+            }
+        }
+    </script>
+    <style>
+        .order-item {
+            transition: all 0.3s ease;
+        }
+        .order-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 640px) {
+            #paymentModal > div,
+            #confirmationModal > div {
+                margin: 1rem;
+                max-height: 85vh;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <span class="text-2xl font-bold text-primary">Tempat<span class="text-secondary">Kumpul</span></span>
+</a>
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                    <i data-feather="home" class="text-gray-700"></i>
+                </a>
+                <a href="menu.html" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                    <i data-feather="menu" class="text-gray-700"></i>
+                </a>
+</div>
+        </div>
+    </nav>
+
+    <!-- Order Section -->
+    <section class="py-12">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <!-- Order Header -->
+                <div class="bg-primary text-white p-6">
+                    <h1 class="text-2xl font-bold">Pesanan Anda</h1>
+                    <p class="text-white text-opacity-90">Review dan konfirmasi pilihan lezat Anda</p>
+</div>
+                
+                <!-- Order Items -->
+                <div class="p-6 border-b">
+                    <div class="space-y-4">
+                        <div id="cartItems">
+                            <!-- Cart items will be dynamically inserted here -->
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                                const cartItemsContainer = document.getElementById('cartItems');
+                                
+                                if (cart.length === 0) {
+                                    cartItemsContainer.innerHTML = `
+                                        <div class="text-center py-8">
+                                            <i data-feather="shopping-cart" class="w-12 h-12 mx-auto text-gray-400"></i>
+                                            <p class="text-gray-600 mt-4">Keranjang Anda kosong</p>
+                                        </div>
+                                    `;
+                                    feather.replace();
+                                    return;
+                                }
+                                
+                                let subtotal = 0;
+                                
+                                cart.forEach(item => {
+                                    const itemTotal = item.price * item.quantity;
+                                    subtotal += itemTotal;
+                                    
+                                    cartItemsContainer.innerHTML += `
+                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg order-item">
+                                            <div class="flex items-center">
+                                                <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover">
+                                                <div class="ml-4">
+                                                    <h3 class="font-semibold text-gray-800">${item.name}</h3>
+                                                    <p class="text-sm text-gray-600">Rp ${item.price.toLocaleString()}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <div class="flex items-center border rounded-lg overflow-hidden">
+                                                    <button class="px-3 py-1 bg-gray-200 hover:bg-gray-300" onclick="updateQuantity('${item.name}', -1)">-</button>
+                                                    <span class="px-3">${item.quantity}</span>
+                                                    <button class="px-3 py-1 bg-gray-200 hover:bg-gray-300" onclick="updateQuantity('${item.name}', 1)">+</button>
+                                                </div>
+                                                <span class="ml-6 font-semibold text-gray-800 w-16 text-right">Rp ${itemTotal.toLocaleString()}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+                                
+                                feather.replace();
+                                // Update the summary
+                                const deliveryFee = cart.length > 0 ? 10000 : 0;
+                                const tax = Math.round(subtotal * 0.1);
+                                const total = subtotal + deliveryFee + tax;
+                                // Update payment button state based on cart
+                                const paymentButton = document.getElementById('paymentButton');
+                                if (cart.length === 0) {
+                                    paymentButton.disabled = true;
+                                    paymentButton.classList.remove('bg-primary', 'hover:bg-opacity-90');
+                                    paymentButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                                    paymentButton.setAttribute('title', 'Keranjang kosong - tambahkan item terlebih dahulu');
+                                } else {
+                                    paymentButton.disabled = false;
+                                    paymentButton.classList.add('bg-primary', 'hover:bg-opacity-90');
+                                    paymentButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                                    paymentButton.removeAttribute('title');
+                                }
+document.querySelector('.order-summary').innerHTML = `
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Subtotal</span>
+                        <span class="font-medium">Rp ${subtotal.toLocaleString()}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Biaya Pengiriman</span>
+                        <span class="font-medium">Rp ${deliveryFee.toLocaleString()}</span>
+                    </div>
+                    <div class="flex justify-between border-t pt-3">
+                        <span class="text-gray-600">Pajak</span>
+                        <span class="font-medium">Rp ${tax.toLocaleString()}</span>
+                    </div>
+                    <div class="flex justify-between pt-3 border-t">
+                        <span class="font-bold text-lg">Total</span>
+                        <span class="font-bold text-lg text-primary">Rp ${total.toLocaleString()}</span>
+                    </div>
+`;
+                            });
+                            function updateQuantity(name, change) {
+                                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                                const itemIndex = cart.findIndex(item => item.name === name);
+                                
+                                if (itemIndex !== -1) {
+                                    cart[itemIndex].quantity += change;
+                                    
+                                    if (cart[itemIndex].quantity <= 0) {
+                                        cart.splice(itemIndex, 1);
+                                    }
+                                    
+                                    localStorage.setItem('cart', JSON.stringify(cart));
+                                    location.reload();
+                                }
+                            }
+</script>
+</div>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Ringkasan Pesanan</h2>
+                    <div class="space-y-3 mb-6 order-summary">
+                        <!-- Order summary will be dynamically inserted here -->
+                    </div>
+<!-- Table Info -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold text-gray-800 mb-2">Nomor Meja</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
+                            <span id="tableNumberDisplay" class="font-medium">Meja belum dikonfirmasi</span>
+                    <button onclick="editTableNumber()" class="text-primary text-sm font-medium hover:underline">Ubah</button>
+</div>
+                    </div>
+<!-- Payment Button -->
+                    <button id="paymentButton" class="w-full py-3 bg-primary text-white rounded-lg font-bold hover:bg-opacity-90 flex items-center justify-center" onclick="checkCartBeforePayment()">
+<i data-feather="credit-card" class="mr-2"></i>
+                        Lanjutkan Pembayaran
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-0 flex items-center justify-center z-50 hidden overflow-y-auto transition-opacity duration-300 ease-in-out">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4 my-8 max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-out scale-95">
+<div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Metode Pembayaran</h3>
+                <button onclick="closePaymentModal()" class="text-gray-500 hover:text-gray-700">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <!-- Bill Summary -->
+            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                <h4 class="font-semibold text-gray-800 mb-2">Ringkasan Pembayaran</h4>
+                <div class="space-y-1 bill-summary">
+                    <!-- Bill summary will be dynamically inserted here -->
+                </div>
+            </div>
+<!-- Payment Options -->
+            <div class="mb-6">
+                <h4 class="font-semibold text-gray-800 mb-3">Pilih Metode Pembayaran</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="showCashPayment()" class="py-3 px-4 border rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                        <i data-feather="dollar-sign" class="text-gray-700 mb-2"></i>
+                        <span>Bayar di Kasir</span>
+                    </button>
+                    <button onclick="showCashlessPayment()" class="py-3 px-4 border rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                        <i data-feather="credit-card" class="text-gray-700 mb-2"></i>
+                        <span>Cashless</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Payment Content (Dynamic) -->
+            <div id="paymentContent"></div>
+        </div>
+    </div>
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-0 flex items-center justify-center z-50 hidden transition-opacity duration-300 ease-in-out">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4 my-8 transform transition-all duration-300 ease-out scale-95 text-center">
+<div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-feather="check" class="text-green-500 w-10 h-10"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Pesanan Berhasil!</h3>
+            <p class="text-gray-600 mb-6">Terima kasih telah memesan di BiteBuddy. Makanan Anda sedang dipersiapkan.</p>
+                    <button onclick="closeConfirmationModal()" class="w-full py-3 bg-primary text-white rounded-lg font-bold hover:bg-opacity-90">
+Tutup
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Payment Modal Functions
+        function showPaymentModal() {
+            // Calculate order totals
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+            const deliveryFee = cart.length > 0 ? 10000 : 0;
+            const tax = Math.round(subtotal * 0.1);
+            const total = subtotal + deliveryFee + tax;
+
+            const modal = document.getElementById('paymentModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('bg-opacity-50');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+            
+            // Update payment summary
+            document.getElementById('paymentContent').innerHTML = '';
+            document.querySelector('#paymentModal .bill-summary').innerHTML = `
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Subtotal</span>
+                    <span class="font-medium">Rp ${subtotal.toLocaleString()}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Biaya Pengiriman</span>
+                    <span class="font-medium">Rp ${deliveryFee.toLocaleString()}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Pajak</span>
+                    <span class="font-medium">Rp ${tax.toLocaleString()}</span>
+                </div>
+                <div class="flex justify-between border-t pt-2 mt-2">
+                    <span class="font-bold">Total</span>
+                    <span class="font-bold text-primary">Rp ${total.toLocaleString()}</span>
+                </div>
+            `;
+            
+            document.body.style.overflow = 'hidden';
+        }
+function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.classList.remove('bg-opacity-50');
+            modal.querySelector('div').classList.remove('scale-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+function showCashPayment() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+            const deliveryFee = cart.length > 0 ? 10000 : 0;
+            const tax = Math.round(subtotal * 0.1);
+            const total = subtotal + deliveryFee + tax;
+
+            document.getElementById('paymentContent').innerHTML = `
+                <div class="text-center py-4">
+                    <p class="text-gray-600 mb-4">Silahkan lanjutkan pembayaran di kasir ketika makanan datang</p>
+                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">Total Pesanan:</span>
+                            <span class="font-bold">Rp ${total.toLocaleString()}</span>
+                        </div>
+                    </div>
+                    <button onclick="completePayment('cashless')" class="w-full py-3 bg-primary text-white rounded-lg font-bold hover:bg-opacity-90">
+Konfirmasi Pesanan
+                    </button>
+                </div>
+            `;
+            feather.replace();
+        }
+function showCashlessPayment() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+            const deliveryFee = cart.length > 0 ? 10000 : 0;
+            const tax = Math.round(subtotal * 0.1);
+            const total = subtotal + deliveryFee + tax;
+
+            document.getElementById('paymentContent').innerHTML = `
+<div class="text-center py-4">
+                    <p class="text-gray-600 mb-4">Scan QR code berikut untuk pembayaran cashless</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BiteBuddyPayment-${Math.floor(Math.random() * 10000)}" alt="QR Code" class="mx-auto mb-4 border border-gray-200 p-2">
+                    <p class="text-sm text-gray-500 mb-4">Total: Rp ${total.toLocaleString()}</p>
+                    <input type="hidden" id="paymentTotal" value="${total}">
+<div class="flex items-center justify-center space-x-4 mb-4">
+                        <img src="https://static.vecteezy.com/system/resources/previews/028/766/364/large_2x/gopay-payment-icon-symbol-free-png.png" alt="Gopay" class="h-8">
+                        <img src="https://static.vecteezy.com/ti/vetor-gratis/p3/13109754-simbolo-do-elemento-shopee-shopeepay-icone-shopeepay-gratis-vetor.jpg" alt="ShopeePay" class="h-8">
+                        <img src="https://1.bp.blogspot.com/-YZb4sqBo4wM/XqcBd4qYwVI/AAAAAAAAAQg/8F60s1NOLJcNGFGRryqYQw_wvxg6d6VtQCLcBGAsYHQ/s1600/OVO%2B%255Bwww.blogovector.com%255D.png" alt="OVO" class="h-8">
+                    </div>
+                    <button onclick="completePayment('cash')" class="w-full py-3 bg-primary text-white rounded-lg font-bold hover:bg-opacity-90">
+Saya Sudah Bayar
+                    </button>
+                </div>
+            `;
+            feather.replace();
+        }
+        function checkCartBeforePayment() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                alert('Keranjang Anda kosong. Silahkan tambahkan makanan terlebih dahulu.');
+                return;
+            }
+            showPaymentModal();
+        }
+
+        function completePayment(paymentMethod) {
+// Calculate final total
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+            const deliveryFee = cart.length > 0 ? 10000 : 0;
+            const tax = Math.round(subtotal * 0.1);
+            const total = subtotal + deliveryFee + tax;
+            // Store payment details
+            const paymentDetails = {
+                items: cart,
+                subtotal: subtotal,
+                deliveryFee: deliveryFee,
+                tax: tax,
+                total: total,
+                paymentMethod: paymentMethod === 'cashless' ? 'Cashless' : 'Cash',
+                date: new Date().toISOString(),
+                tableNumber: localStorage.getItem('tableNumber') || 'Unknown'
+            };
+            // Generate unique order ID
+            const orderId = Date.now() + Math.floor(Math.random() * 1000);
+            
+            // Save to admin orders (append to existing orders)
+            let adminOrders = JSON.parse(localStorage.getItem('adminOrders')) || [];
+            adminOrders.push({
+                id: orderId,
+                items: cart,
+                subtotal: subtotal,
+                deliveryFee: deliveryFee,
+                tax: tax,
+                total: total,
+                paymentMethod: paymentMethod === 'cashless' ? 'Cashless' : 'Cash',
+                status: 'pending',
+                date: new Date().toISOString(),
+                tableNumber: localStorage.getItem('tableNumber') || 'Unknown'
+            });
+            localStorage.setItem('adminOrders', JSON.stringify(adminOrders));
+
+            // Save to customer orders history
+            let ordersHistory = JSON.parse(localStorage.getItem('ordersHistory')) || [];
+            ordersHistory.push(paymentDetails);
+            localStorage.setItem('ordersHistory', JSON.stringify(ordersHistory));
+// Clear the cart after payment
+            localStorage.setItem('cart', JSON.stringify([]));
+            closePaymentModal();
+const modal = document.getElementById('confirmationModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('bg-opacity-50');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeConfirmationModal() {
+            const modal = document.getElementById('confirmationModal');
+            modal.classList.remove('bg-opacity-50');
+            modal.querySelector('div').classList.remove('scale-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                window.location.href = 'index.html';
+            }, 300);
+        }
+</script>
+    </section>
+    <script>
+        function updateTableNumberDisplay() {
+            const tableNumber = localStorage.getItem('tableNumber');
+            const displayElement = document.getElementById('tableNumberDisplay');
+            
+            if (tableNumber) {
+                displayElement.textContent = `Meja ${tableNumber}`;
+            } else {
+                displayElement.textContent = 'Meja belum dikonfirmasi';
+            }
+        }
+
+        function editTableNumber() {
+            const newTableNumber = prompt('Masukkan nomor meja baru:', localStorage.getItem('tableNumber') || '');
+            if (newTableNumber !== null) {
+                localStorage.setItem('tableNumber', newTableNumber);
+                updateTableNumberDisplay();
+            }
+        }
+
+        // Initialize table number display
+        updateTableNumberDisplay();
+        feather.replace();
+    </script>
+</body>
+</html>
